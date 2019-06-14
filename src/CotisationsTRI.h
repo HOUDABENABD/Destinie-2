@@ -238,7 +238,7 @@ struct CotisationsTRI {
       
       contrib_retr_actif += X.salaires[age] * c.taux_part_du_revenu[t] + csg_sal_fsv + cot_sal_Retr_AGFF + cot_patr_ASF + cot_patr_ASF + cot_patr_AGFF;
     
-      /*static Rdout dfOut("cotis",{
+      static Rdout dfOut("cotis",{
         "salaire", "Id", "age", "statut", "annee",
         "cot_patr_Retr_rg", "cot_patr_Retr_fpe", "cot_patr_Retr_fpt", "cot_patr_Retr_ind", 
         "cot_patr_Retr_alleg", "cot_patr_arrco", "cot_patr_agirc", "cot_patr_ASF", 
@@ -251,7 +251,7 @@ struct CotisationsTRI {
          cot_patr_Retr_alleg ,  cot_patr_arrco ,  cot_patr_agirc ,  cot_patr_ASF , 
          cot_patr_AGFF ,  cot_sal_Retr_arrco ,  cot_sal_Retr_agirc ,  cot_sal_Retr_rg , 
          cot_sal_Retr_AGFF ,  cot_sal_Retr_ASF ,  cot_sal_Retr_fp ,  cot_sal_Retr_ind     
-      );*/
+      );
       
       cot_rg = cot_patr_Retr_rg + cot_sal_Retr_rg  + ((options_tri.NoAllegementsCot) ? 0 : cot_patr_Retr_alleg);
       
