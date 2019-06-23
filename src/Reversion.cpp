@@ -1,7 +1,7 @@
 #include "Reversion.h"
 #include "Retraite.h"
 
-/**/#define JB  1
+//#define JB  1
 
   /**
    * Calcule le montant de reversion pour un individu
