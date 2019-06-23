@@ -119,13 +119,13 @@
   rev_ag_ar = M->TauxRevARRCO[t] * retraite_y.pension_ag_ar;
 #else
       /* @JB20190623 ****/
-      rev_ar = double(2)/double(3) * retraite_y.pension_ar - double(1)/double(3) * retraite_x.pension_ar;
+      rev_ar = (double(2)/double(3)) * retraite_y.pension_ar - (double(1)/double(3)) * retraite_x.pension_ar;
       if(rev_ar < 0) rev_ar = 0;
 
-      rev_ag = double(2)/double(3) * retraite_y.pension_ag - double(1)/double(3) * retraite_x.pension_ag;
+      rev_ag = (double(2)/double(3)) * retraite_y.pension_ag - (double(1)/double(3)) * retraite_x.pension_ag;
       if(rev_ag < 0) rev_ag = 0;
 
-      rev_ag_ar = double(2)/double(3) * retraite_y.pension_ag_ar - double(1)/double(3) * retraite_x.pension_ag_ar;
+      rev_ag_ar = (double(2)/double(3)) * retraite_y.pension_ag_ar - (double(1)/double(3)) * retraite_x.pension_ag_ar;
       if(rev_ag_ar < 0) rev_ag_ar = 0;
       /******************/
 #endif
