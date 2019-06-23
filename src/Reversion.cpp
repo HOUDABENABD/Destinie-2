@@ -61,7 +61,7 @@
       double agetest_x = arr_mois(t-X.anaiss%1900, -X.moisnaiss); //TODO
       Leg lx = Leg(X, age_x, min(X.anaiss+age_x,legRetroMax));
 
-      Retraite retraite_x(X,t-1);
+      Retraite retraite_x(X,t);
       // copie
       retraite_x.primoliq = X.retr->primoliq;
       retraite_x.totliq = X.retr->totliq;
