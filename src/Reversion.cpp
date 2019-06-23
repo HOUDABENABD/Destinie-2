@@ -1,8 +1,10 @@
 #include "Reversion.h"
 #include "Retraite.h"
 
+//#define JB  1
+
   /**
-   * Calcul le montant de reversion pour un individu
+   * Calcule le montant de reversion pour un individu
    */
   Reversion::Reversion(Indiv & X, Indiv & Y, int t, int legRetroMax) :
       rev(0), rev_rg(0), rev_fp(0), rev_in(0), rev_ag(0), rev_ar(0), rev_ag_ar(0), ageliq_rev(0), nbEnfCharge(0),idConj(Y.Id)
@@ -20,7 +22,7 @@
 	retraite_y.liq = Y.retr->liq;
 	retraite_y.revaloDir(t);
 	// Si le conjoint décédé n'avait pas tout liquidé
-	// on calcul une pension théorique
+	// on calcule une pension théorique
   
 	ptr<DroitsRetr> dr = make_shared<DroitsRetr>(Y,l_y,agetest_y);
 	if( !retraite_y.totliq) {
@@ -53,16 +55,81 @@
   
   double duree_rg_maj = retraite_y.liq->duree_rg_maj;
   double duree_in_maj = retraite_y.liq->duree_in_maj;
-  
+
+#if defined(JB)
+  /* @JB20190623 Objet temporaire Retraite pour X aussi */
+      double agetest_x = arr_mois(t-X.anaiss%1900, -X.moisnaiss); //TODO
+      Leg lx = Leg(X, age_x, min(X.anaiss+age_x,legRetroMax));
+
+      Retraite retraite_x(X,t);
+      // copie
+      retraite_x.primoliq = X.retr->primoliq;
+      retraite_x.totliq = X.retr->totliq;
+      retraite_x.liq = X.retr->liq;
+      retraite_x.revaloDir(t);
+      // Si le conjoint survivant bénéficiaire n'a pas tout liquidé
+      // on calcule une pension théorique
+      
+      ptr<DroitsRetr> drx = make_shared<DroitsRetr>(X,lx,agetest_x);
+      if( !retraite_x.totliq) {
+          
+          drx->l.AgeMinRG = 0;
+          drx->l.AgeMinFP = 0;
+          
+          drx->durees_base();
+          drx->durees_majo();
+          drx->DecoteSurcote();
+          
+          if( !retraite_x.primoliq ) {
+              drx->tauxliq_rg=1;
+              drx->tauxliq_ar=1;
+              drx->tauxliq_fp=1;
+              drx->Liq();
+          }
+          else if( !retraite_x.totliq ){
+              drx->tauxliq_rg=1;
+              drx->tauxliq_ar=1;
+              drx->SecondLiq();
+          }
+          retraite_x.liq = drx;
+          retraite_x.totliq = drx;
+          retraite_x.primoliq = drx;
+      }
+      
+      
+      retraite_x.revaloDir(t);
+      
+      double duree_rg_maj_x = retraite_x.liq->duree_rg_maj;
+      double duree_in_maj_x = retraite_x.liq->duree_in_maj;
+
+      
+  /* @JB20190623 ... Objet temporaire pour X également *****************************************/
+#endif
+      
   // Puis on simule la réversion
   // Reversions sans conditions de ressources
   // Attention pour les fonctionnaires, on ne vérifie pas que les enfants sont communs à la personne décédée et au bénéficiaire
   
+  rev_fp = M->TauxRevFP[t]    * retraite_y.pension_fp;
+
+#if !defined(JB)
+// @JB20190623 Formules refaites plus bas pour prendre en compte X également
   rev_ar = M->TauxRevARRCO[t] * retraite_y.pension_ar;
   rev_ag = M->TauxRevAGIRC[t] * retraite_y.pension_ag;
-  rev_fp = M->TauxRevFP[t]    * retraite_y.pension_fp;
   rev_ag_ar = M->TauxRevARRCO[t] * retraite_y.pension_ag_ar;
-  
+#else
+      /* @JB20190623 ****/
+      rev_ar = double(2)/double(3) * retraite_y.pension_ar - double(1)/double(3) * retraite_x.pension_ar;
+      if(rev_ar < 0) rev_ar = 0;
+
+      rev_ag = double(2)/double(3) * retraite_y.pension_ag - double(1)/double(3) * retraite_x.pension_ag;
+      if(rev_ag < 0) rev_ag = 0;
+
+      rev_ag_ar = double(2)/double(3) * retraite_y.pension_ag_ar - double(1)/double(3) * retraite_x.pension_ag_ar;
+      if(rev_ag_ar < 0) rev_ag_ar = 0;
+      /******************/
+#endif
+      
   //rev_fpe= M->TauxRevFP[t]   * Y.pension_fp * (Y.typefp == "FPE");
   //rev_fpt= M->TauxRevFP[t]   * Y.pension_fp * (Y.typefp == "FPT");
   
