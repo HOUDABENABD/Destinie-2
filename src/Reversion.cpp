@@ -59,7 +59,7 @@
 #if defined(JB)
   /* @JB20190623 Objet temporaire Retraite pour X aussi */
       double agetest_x = arr_mois(t-X.anaiss%1900, -X.moisnaiss); //TODO
-      Leg l_x = Leg(X, age_x, min(X.anaiss+age_x,legRetroMax));
+      Leg lx = Leg(X, age_x, min(X.anaiss+age_x,legRetroMax));
 
       Retraite retraite_x(X,t);
       // copie
@@ -70,7 +70,7 @@
       // Si le conjoint survivant bénéficiaire n'a pas tout liquidé
       // on calcule une pension théorique
       
-      ptr<DroitsRetr> drx = make_shared<DroitsRetr>(X,l_x,agetest_x);
+      ptr<DroitsRetr> drx = make_shared<DroitsRetr>(X,lx,agetest_x);
       if( !retraite_x.totliq) {
           
           drx->l.AgeMinRG = 0;
