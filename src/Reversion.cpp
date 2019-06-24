@@ -121,7 +121,7 @@
       /* @JB20190623 ****/
      // rev_ar = (double(2)/double(3)) * retraite_y.pension_ar - (double(1)/double(3)) * retraite_x.pension_ar;
 	      
-	      rev_ar = retraite_y.pension_ar;
+	      rev_ar = drx.pension_ar;
 
       if(rev_ar < 0) rev_ar = 0;
 
